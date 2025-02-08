@@ -3,7 +3,7 @@ name: Deploy Spring Boot to EC2
 on:
   push:
     branches:
-      - main  # Trigger deployment when code is pushed to main
+      - main  # Deploys on push to main branch
 
 jobs:
   deploy:
@@ -23,7 +23,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # ✅ Fixed version
         with:
           name: spring-boot-app
           path: target/*.jar
@@ -32,7 +32,7 @@ jobs:
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
+          USER: "ec2-user"
         run: |
           echo "$PRIVATE_KEY" > key.pem
           chmod 600 key.pem
